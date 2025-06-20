@@ -1,0 +1,333 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+<head>
+  <meta charset="UTF-8" />
+  <title>Calazzans</title>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700&display=swap" rel="stylesheet">
+  <style>
+    body {
+      margin: 0;
+      font-family: 'Inter', Arial, sans-serif;
+      background-color: #f5f8fa;
+      color: #003366;
+    }
+
+    .topo {
+      background-color: #00cc66;
+      color: white;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: 15px 30px;
+      box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+    }
+
+    .topo h1 {
+      margin: 0 auto;
+      font-size: 32px;
+      font-weight: 700;
+    }
+
+    .retangulo {
+      background-color: #ffffff;
+      margin: 40px auto 30px;
+      width: 90%;
+      max-width: 1000px;
+      padding: 30px;
+      border-radius: 16px;
+      box-shadow: 0 6px 16px rgba(0, 0, 0, 0.05);
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+    }
+
+    .texto-retangulo {
+      display: flex;
+      flex-direction: column;
+      gap: 20px;
+      flex: 1;
+    }
+
+    .intro-text {
+      font-size: 20px;
+      font-weight: 600;
+    }
+
+    .info-linha {
+      display: flex;
+      gap: 60px;
+    }
+
+    .info-item {
+      display: flex;
+      flex-direction: column;
+      font-size: 18px;
+    }
+
+    .saldo {
+      color: #009944;
+      font-size: 26px;
+      margin-top: 6px;
+      font-weight: bold;
+    }
+
+    .despesas {
+      color: #cc0000;
+      font-size: 26px;
+      margin-top: 6px;
+      font-weight: bold;
+    }
+
+    .divisoria {
+      width: 1px;
+      height: 130px;
+      background-color: rgba(0, 51, 102, 0.15);
+      margin: 0 30px;
+      align-self: center;
+    }
+
+    .botoes {
+      display: flex;
+      flex-direction: column;
+      gap: 15px;
+    }
+
+    .botao {
+      background-color: #00cc66;
+      border: none;
+      color: white;
+      font-size: 28px;
+      width: 55px;
+      height: 55px;
+      border-radius: 12px;
+      cursor: pointer;
+      transition: background-color 0.3s ease, transform 0.1s ease;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      box-shadow: 0 4px 8px rgba(0,0,0,0.1);
+    }
+
+    .botao:hover {
+      background-color: #00b35a;
+      transform: scale(1.05);
+    }
+
+    .grade-quadrados {
+      width: 90%;
+      max-width: 1000px;
+      margin: 0 auto 60px;
+      display: flex;
+      justify-content: space-between;
+      gap: 20px;
+      align-items: flex-start;
+    }
+
+    .quadrado {
+      background-color: #ffffff;
+      border-radius: 16px;
+      box-shadow: 0 6px 16px rgba(0, 0, 0, 0.05);
+      flex: 1;
+      padding: 30px;
+      text-align: center;
+      transition: transform 0.2s ease;
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+    }
+
+    .quadrado:hover {
+      transform: scale(1.02);
+    }
+
+    .quadrado .titulo {
+      font-size: 20px;
+      font-weight: 600;
+      margin-bottom: 8px;
+    }
+
+    .quadrado .valor {
+      font-size: 26px;
+      font-weight: bold;
+      color: #009944;
+    }
+
+    .quadrado.despesa .valor {
+      color: #cc0000;
+    }
+
+    .lista-despesas {
+      min-height: 300px;
+      align-items: flex-start;
+      text-align: left;
+    }
+
+    .lista-itens {
+      margin-top: 20px;
+      padding-left: 20px;
+      list-style-type: disc;
+      font-size: 16px;
+      line-height: 1.6;
+      color: #333;
+    }
+
+    .oculto {
+      display: none;
+    }
+
+    .ver-mais-btn {
+      margin-top: 15px;
+      font-size: 14px;
+      color: #0077cc;
+      background: none;
+      border: none;
+      cursor: pointer;
+      padding: 0;
+      text-decoration: underline;
+      align-self: flex-start;
+    }
+
+    /* Estilo para a caixa do gráfico */
+    .grafico-container {
+      background: #fff;
+      border: 1px solid #00cc66;
+      border-radius: 12px;
+      padding: 20px;
+      margin: 20px auto 60px;
+      max-width: 600px;
+      width: 100%;
+      box-shadow: 0 4px 12px rgba(0,204,102,0.2);
+      text-align: center;
+    }
+
+    .grafico-container h2 {
+      margin: 0 0 15px 0;
+      color: #009944;
+      font-weight: 700;
+      font-size: 22px;
+    }
+  </style>
+</head>
+<body>
+
+  <div class="topo">
+    <div class="icone"></div>
+    <h1>Calazzans</h1>
+    <div class="icone"></div>
+  </div>
+
+  <div class="retangulo">
+    <div class="texto-retangulo">
+      <div class="intro-text">Vamos gerenciar seu dinheiro</div>
+      <div class="info-linha">
+        <div class="info-item">
+          <div>Saldo do mês:</div>
+          <span class="saldo">R$ 3.250,00</span>
+        </div>
+        <div class="info-item">
+          <div>Despesas do mês:</div>
+          <span class="despesas">R$ 1.670,00</span>
+        </div>
+      </div>
+    </div>
+
+    <div class="divisoria"></div>
+
+    <div class="botoes">
+      <button class="botao">+</button>
+      <button class="botao">−</button>
+    </div>
+  </div>
+
+  <div class="grade-quadrados">
+    <div class="quadrado">
+      <div class="titulo">Saldo atual</div>
+      <div class="valor">R$ 2.750,00</div>
+    </div>
+
+    <div class="quadrado despesa lista-despesas">
+      <div class="titulo">Despesas</div>
+      <div class="valor">R$ 670,00</div>
+      <ul class="lista-itens">
+        <li>Supermercado - R$ 150,00</li>
+        <li>Combustível - R$ 100,00</li>
+        <li>Internet - R$ 80,00</li>
+        <li>Farmácia - R$ 70,00</li>
+        <li>Transporte - R$ 100,00</li>
+
+        <li class="oculto">Aluguel - R$ 800,00</li>
+        <li class="oculto">Academia - R$ 120,00</li>
+        <li class="oculto">Cinema - R$ 60,00</li>
+        <li class="oculto">Lanche - R$ 45,00</li>
+        <li class="oculto">Assinatura Netflix - R$ 55,00</li>
+        <li class="oculto">Petshop - R$ 90,00</li>
+        <li class="oculto">Uber - R$ 75,00</li>
+        <li class="oculto">Gasolina extra - R$ 110,00</li>
+        <li class="oculto">Telefone - R$ 50,00</li>
+        <li class="oculto">Presentes - R$ 130,00</li>
+      </ul>
+      <button class="ver-mais-btn" onclick="toggleDespesas(this)">Ver mais</button>
+    </div>
+  </div>
+
+  <!-- Gráfico fora do retângulo, abaixo do saldo atual e despesas -->
+  <div class="grafico-container">
+    <h2>Vendas Mensais</h2>
+    <canvas id="graficoVendas"></canvas>
+  </div>
+
+  <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+  <script>
+    function toggleDespesas(botao) {
+      const container = botao.closest('.lista-despesas');
+      const itensOcultos = container.querySelectorAll('.oculto');
+      const ocultosVisiveis = itensOcultos.length > 0 && itensOcultos[0].style.display === 'list-item';
+
+      if (ocultosVisiveis) {
+        itensOcultos.forEach(item => item.style.display = 'none');
+        botao.textContent = 'Ver mais';
+      } else {
+        itensOcultos.forEach(item => item.style.display = 'list-item');
+        botao.textContent = 'Ver menos';
+      }
+    }
+
+    // Inicializa o gráfico com Chart.js
+    const ctx = document.getElementById('graficoVendas').getContext('2d');
+    const graficoVendas = new Chart(ctx, {
+      type: 'bar',
+      data: {
+        labels: ['Jan', 'Fev', 'Mar', 'Abr', 'Mai', 'Jun'],
+        datasets: [{
+          label: 'Vendas',
+          data: [1200, 1900, 3000, 2500, 2200, 2800],
+          backgroundColor: 'rgba(0, 204, 102, 0.7)',
+          borderColor: 'rgba(0, 204, 102, 1)',
+          borderWidth: 1,
+          borderRadius: 6,
+        }]
+      },
+      options: {
+        responsive: true,
+        scales: {
+          y: {
+            beginAtZero: true
+          }
+        },
+        plugins: {
+          legend: {
+            labels: {
+              color: '#003366',
+              font: {
+                size: 14,
+                weight: 'bold'
+              }
+            }
+          }
+        }
+      }
+    });
+  </script>
+
+</body>
+</html>

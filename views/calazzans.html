@@ -2,9 +2,11 @@
 <html lang="pt-br">
 <head>
   <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Calazzans</title>
   <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700&display=swap" rel="stylesheet">
   <style>
+    /* Estilos gerais do corpo da página */
     body {
       margin: 0;
       font-family: 'Inter', Arial, sans-serif;
@@ -12,6 +14,7 @@
       color: #003366;
     }
 
+    /* Cabeçalho superior */
     .topo {
       background-color: #00cc66;
       color: white;
@@ -28,15 +31,17 @@
       font-weight: 700;
     }
 
+    /* Retângulo principal de informações */
     .retangulo {
       background-color: #ffffff;
       margin: 40px auto 30px;
       width: 90%;
-      max-width: 1000px;
+      max-width: 1600px; /* Aumentado para acomodar mais caixas */
       padding: 30px;
       border-radius: 16px;
       box-shadow: 0 6px 16px rgba(0, 0, 0, 0.05);
       display: flex;
+      flex-wrap: wrap; /* Permite que os itens quebrem a linha em telas menores */
       align-items: center;
       justify-content: space-between;
     }
@@ -46,6 +51,7 @@
       flex-direction: column;
       gap: 20px;
       flex: 1;
+      min-width: 250px; /* Largura mínima para o texto */
     }
 
     .intro-text {
@@ -56,6 +62,7 @@
     .info-linha {
       display: flex;
       gap: 60px;
+      flex-wrap: wrap; /* Permite que os itens quebrem a linha */
     }
 
     .info-item {
@@ -113,31 +120,40 @@
       transform: scale(1.05);
     }
 
+    /* Grade de quadrados de informações */
     .grade-quadrados {
       width: 90%;
-      max-width: 1000px;
+      max-width: 1600px; /* Aumentado para acomodar mais caixas */
       margin: 0 auto 60px;
-      display: flex;
-      justify-content: space-between;
-      gap: 20px;
-      align-items: flex-start;
+      display: grid; 
+      grid-template-columns: repeat(auto-fit, minmax(340px, 1fr)); /* Layout responsivo para as caixas */
+      gap: 25px;
     }
 
     .quadrado {
       background-color: #ffffff;
       border-radius: 16px;
       box-shadow: 0 6px 16px rgba(0, 0, 0, 0.05);
-      flex: 1;
       padding: 30px;
-      text-align: center;
-      transition: transform 0.2s ease;
+      transition: transform 0.2s ease, box-shadow 0.2s ease;
       display: flex;
       flex-direction: column;
-      justify-content: center;
+      align-items: center; /* Centraliza o conteúdo horizontalmente */
+      min-height: 350px; /* Altura mínima para alinhar os cards */
+      cursor: grab; /* Indica que o item é arrastável */
+    }
+    
+    .quadrado.dragging {
+      opacity: 0.5;
+      cursor: grabbing;
+      border: 2px dashed #00cc66;
+      box-shadow: none;
+      transform: scale(0.98);
     }
 
     .quadrado:hover {
-      transform: scale(1.02);
+      transform: translateY(-5px);
+      box-shadow: 0 10px 20px rgba(0, 0, 0, 0.08);
     }
 
     .quadrado .titulo {
@@ -152,14 +168,18 @@
       color: #009944;
     }
 
-    .quadrado.despesa .valor {
-      color: #cc0000;
+    .quadrado.despesa-lista {
+        align-items: flex-start; /* Alinha o conteúdo à esquerda no card de despesa */
+        text-align: left;
+    }
+    
+    .quadrado.despesa-lista .titulo, .quadrado.despesa-lista .valor {
+        align-self: center; /* Centraliza apenas o título e valor no card de despesa */
+        text-align: center;
     }
 
-    .lista-despesas {
-      min-height: 300px;
-      align-items: flex-start;
-      text-align: left;
+    .quadrado.despesa-lista .valor {
+      color: #cc0000;
     }
 
     .lista-itens {
@@ -169,6 +189,7 @@
       font-size: 16px;
       line-height: 1.6;
       color: #333;
+      width: 100%;
     }
 
     .oculto {
@@ -176,25 +197,118 @@
     }
 
     .ver-mais-btn {
-      margin-top: 15px;
+      margin-top: auto; /* Empurra o botão para o final do card */
+      padding-top: 10px;
       font-size: 14px;
       color: #0077cc;
       background: none;
       border: none;
       cursor: pointer;
-      padding: 0;
       text-decoration: underline;
-      align-self: flex-start;
+      align-self: center;
+    }
+    
+    /* Estilos para próximos recebimentos */
+    .proximos-recebimentos {
+        margin-top: 25px;
+        text-align: left;
+        font-size: 14px;
+        width: 100%;
+        border-top: 1px solid #f0f0f0;
+        padding-top: 15px;
     }
 
+    .proximos-recebimentos-titulo {
+        font-weight: 600;
+        color: #003366;
+        margin-bottom: 8px;
+        text-align: center;
+    }
+
+    .lista-datas {
+        list-style-type: none;
+        padding: 0;
+        margin: 0;
+        color: #333;
+    }
+
+    .lista-datas li {
+        padding: 6px 0;
+        border-bottom: 1px solid #f5f5f5;
+        display: flex;
+        justify-content: space-between;
+    }
+
+    .lista-datas li:last-child {
+        border-bottom: none;
+    }
+    
+    /* Estilos para a Meta de Gastos */
+    .meta-info {
+        font-size: 18px;
+        margin: 15px 0;
+        color: #555;
+    }
+    .gasto-atual {
+        font-weight: 600;
+        color: #cc0000;
+    }
+    .meta-total {
+        font-weight: 600;
+        color: #009944;
+    }
+    .progress-bar-container {
+        width: 90%;
+        height: 20px;
+        background-color: #e9ecef;
+        border-radius: 10px;
+        overflow: hidden;
+        margin-bottom: 15px;
+    }
+    .progress-bar-fill {
+        height: 100%;
+        background-color: #00cc66;
+        border-radius: 10px;
+        transition: width 0.5s ease-in-out;
+    }
+    .meta-status {
+        font-size: 14px;
+        font-weight: 500;
+    }
+
+    /* Estilos para o Histórico de Gastos */
+    .lista-historico {
+        list-style-type: none;
+        padding: 0;
+        margin: 20px 0 0 0;
+        width: 100%;
+        text-align: left;
+    }
+    .lista-historico li {
+        display: flex;
+        justify-content: space-between;
+        padding: 10px 10px;
+        border-bottom: 1px solid #f0f0f0;
+        font-size: 15px;
+    }
+    .lista-historico li:last-child {
+        border-bottom: none;
+    }
+    .lista-historico li span:last-child {
+        font-weight: 600;
+        color: #cc0000;
+    }
+
+
+    /* Container do gráfico */
     .grafico-container {
       background: #fff;
       border: 1px solid #00cc66;
       border-radius: 12px;
       padding: 20px;
       margin: 20px auto 60px;
-      max-width: 600px;
-      width: 100%;
+      max-width: 1600px; 
+      width: 90%;
       box-shadow: 0 4px 12px rgba(0,204,102,0.2);
       text-align: center;
     }
@@ -206,7 +320,7 @@
       font-size: 22px;
     }
 
-    /* Modal */
+    /* Estilos do Modal */
     .modal {
       display: none;
       position: fixed;
@@ -221,41 +335,62 @@
 
     .modal-conteudo {
       background-color: #fff;
-      margin: 10% auto;
-      padding: 30px;
-      border: 1px solid #ccc;
+      margin: 5% auto;
+      padding: 25px 40px;
+      border: none;
       width: 90%;
-      max-width: 400px;
+      max-width: 450px;
       border-radius: 16px;
       box-shadow: 0 6px 20px rgba(0,0,0,0.2);
-      text-align: center;
+      text-align: left;
       position: relative;
     }
 
     .modal-conteudo h2 {
       margin-top: 0;
+      margin-bottom: 25px;
       color: #00cc66;
+      text-align: center;
+    }
+    
+    .modal-label {
+        display: block;
+        margin-bottom: 5px;
+        font-weight: 600;
+        color: #555;
+        font-size: 14px;
     }
 
     .modal-input {
-      width: 90%;
-      margin: 10px 0;
-      padding: 10px;
+      width: 100%;
+      box-sizing: border-box; 
+      padding: 12px;
       font-size: 16px;
       border-radius: 8px;
       border: 1px solid #ccc;
+      margin-bottom: 15px;
+    }
+    
+    .modal-grupo-inline {
+        display: flex;
+        gap: 20px;
+    }
+    
+    .modal-grupo-inline > div {
+        flex: 1;
     }
 
     .modal-confirmar {
       background-color: #00cc66;
       color: white;
       border: none;
-      padding: 10px 20px;
+      padding: 12px 20px;
       font-size: 16px;
       border-radius: 10px;
       cursor: pointer;
-      margin-top: 15px;
+      margin-top: 20px;
       transition: background-color 0.3s ease;
+      width: 100%;
     }
 
     .modal-confirmar:hover {
@@ -270,6 +405,25 @@
       font-weight: bold;
       color: #999;
       cursor: pointer;
+    }
+    
+    /* Responsividade */
+    @media (max-width: 768px) {
+        .retangulo {
+            flex-direction: column;
+            gap: 20px;
+        }
+        .divisoria {
+            width: 80%;
+            height: 1px;
+            margin: 20px 0;
+        }
+        .botoes {
+            flex-direction: row;
+        }
+        .modal-conteudo {
+            margin: 10% auto;
+        }
     }
   </style>
 </head>
@@ -305,12 +459,20 @@
   </div>
 
   <div class="grade-quadrados">
-    <div class="quadrado">
+    <div class="quadrado" draggable="true">
       <div class="titulo">Saldo atual</div>
       <div class="valor">R$ 2.750,00</div>
+      <div class="proximos-recebimentos">
+          <div class="proximos-recebimentos-titulo">Próximos recebimentos</div>
+          <ul class="lista-datas">
+              <li><span>Salário (1ª Parcela)</span> <span>05/07/2025</span></li>
+              <li><span>Bico (Projeto Y)</span> <span>10/07/2025</span></li>
+              <li><span>Salário (2ª Parcela)</span> <span>20/07/2025</span></li>
+          </ul>
+      </div>
     </div>
 
-    <div class="quadrado despesa lista-despesas">
+    <div class="quadrado despesa-lista" draggable="true">
       <div class="titulo">Despesas</div>
       <div class="valor">R$ 670,00</div>
       <ul class="lista-itens">
@@ -332,6 +494,36 @@
       </ul>
       <button class="ver-mais-btn" onclick="toggleDespesas(this)">Ver mais</button>
     </div>
+
+    <div class="quadrado" draggable="true">
+        <div class="titulo">Despesas por Categoria</div>
+        <canvas id="graficoDespesasPizza" style="margin-top: 15px; max-height: 250px;"></canvas>
+    </div>
+    
+    <!-- Nova caixa Meta de Gastos -->
+    <div class="quadrado" draggable="true">
+        <div class="titulo">Meta de Gastos (Mês)</div>
+        <div class="meta-info">
+            <span class="gasto-atual">R$ 1.670,00</span> / <span class="meta-total">R$ 2.500,00</span>
+        </div>
+        <div class="progress-bar-container">
+            <div class="progress-bar-fill" style="width: 67%;"></div>
+        </div>
+        <div class="meta-status">
+            Você está dentro da meta!
+        </div>
+    </div>
+    
+    <!-- Nova caixa Histórico de Gastos -->
+    <div class="quadrado" draggable="true">
+        <div class="titulo">Histórico de Gastos</div>
+        <ul class="lista-historico">
+            <li><span>Maio:</span> <span>R$ 2.150,45</span></li>
+            <li><span>Abril:</span> <span>R$ 1.980,90</span></li>
+            <li><span>Março:</span> <span>R$ 2.410,00</span></li>
+            <li><span>Fevereiro:</span> <span>R$ 1.850,70</span></li>
+        </ul>
+    </div>
   </div>
 
   <div class="grafico-container">
@@ -339,87 +531,240 @@
     <canvas id="graficoVendas"></canvas>
   </div>
 
-  <!-- Modal -->
+  <!-- Modal (o conteúdo será injetado via JavaScript) -->
   <div id="modal" class="modal">
     <div class="modal-conteudo">
-      <span class="fechar" onclick="fecharModal()">&times;</span>
-      <h2 id="modalTitulo">Adicionar Valor</h2>
-      <input type="text" placeholder="Descrição" class="modal-input" />
-      <input type="number" placeholder="Valor (R$)" class="modal-input" />
-      <button class="modal-confirmar">Confirmar</button>
+        <!-- Conteúdo dinâmico aqui -->
     </div>
   </div>
 
   <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
   <script>
-    function toggleDespesas(botao) {
-      const container = botao.closest('.lista-despesas');
-      const itensOcultos = container.querySelectorAll('.oculto');
-      const ocultosVisiveis = itensOcultos.length > 0 && itensOcultos[0].style.display === 'list-item';
-
-      if (ocultosVisiveis) {
-        itensOcultos.forEach(item => item.style.display = 'none');
-        botao.textContent = 'Ver mais';
-      } else {
-        itensOcultos.forEach(item => item.style.display = 'list-item');
-        botao.textContent = 'Ver menos';
-      }
-    }
-
-    // Gráfico
-    const ctx = document.getElementById('graficoVendas').getContext('2d');
-    const graficoVendas = new Chart(ctx, {
-      type: 'bar',
-      data: {
-        labels: ['Jan', 'Fev', 'Mar', 'Abr', 'Mai', 'Jun'],
-        datasets: [{
-          label: 'Vendas',
-          data: [1200, 1900, 3000, 2500, 2200, 2800],
-          backgroundColor: 'rgba(0, 204, 102, 0.7)',
-          borderColor: 'rgba(0, 204, 102, 1)',
-          borderWidth: 1,
-          borderRadius: 6,
-        }]
-      },
-      options: {
-        responsive: true,
-        scales: {
-          y: { beginAtZero: true }
-        },
-        plugins: {
-          legend: {
-            labels: {
-              color: '#003366',
-              font: { size: 14, weight: 'bold' }
-            }
-          }
-        }
-      }
-    });
-
-    // Modal
-    function abrirModal(tipo) {
-      const modal = document.getElementById('modal');
-      const titulo = document.getElementById('modalTitulo');
-      titulo.textContent = tipo === 'adicionar' ? 'Adicionar Valor' : 'Remover Valor';
-      modal.style.display = 'block';
-    }
-
-    function fecharModal() {
-      document.getElementById('modal').style.display = 'none';
-    }
-
-    window.onclick = function(event) {
-      const modal = document.getElementById('modal');
-      if (event.target === modal) {
-        fecharModal();
-      }
-    }
-
     document.addEventListener("DOMContentLoaded", () => {
-      const botoes = document.querySelectorAll(".botao");
-      botoes[0].addEventListener("click", () => abrirModal('adicionar'));
-      botoes[1].addEventListener("click", () => abrirModal('remover'));
+        // Função para mostrar/ocultar despesas
+        window.toggleDespesas = function(botao) {
+            const container = botao.closest('.despesa-lista');
+            const itensOcultos = container.querySelectorAll('.oculto');
+            const ocultosVisiveis = itensOcultos.length > 0 && itensOcultos[0].style.display === 'list-item';
+
+            if (ocultosVisiveis) {
+                itensOcultos.forEach(item => item.style.display = 'none');
+                botao.textContent = 'Ver mais';
+            } else {
+                itensOcultos.forEach(item => item.style.display = 'list-item');
+                botao.textContent = 'Ver menos';
+            }
+        }
+
+        // Gráfico de Barras
+        const ctx = document.getElementById('graficoVendas').getContext('2d');
+        const graficoVendas = new Chart(ctx, {
+            type: 'bar',
+            data: {
+                labels: ['Jan', 'Fev', 'Mar', 'Abr', 'Mai', 'Jun'],
+                datasets: [{
+                    label: 'Vendas',
+                    data: [1200, 1900, 3000, 2500, 2200, 2800],
+                    backgroundColor: 'rgba(0, 204, 102, 0.7)',
+                    borderColor: 'rgba(0, 204, 102, 1)',
+                    borderWidth: 1,
+                    borderRadius: 6,
+                }]
+            },
+            options: {
+                responsive: true,
+                scales: {
+                    y: { beginAtZero: true }
+                },
+                plugins: {
+                    legend: {
+                        labels: {
+                            color: '#003366',
+                            font: { size: 14, weight: 'bold' }
+                        }
+                    }
+                }
+            }
+        });
+        
+        // Gráfico de Pizza
+        const ctxPizza = document.getElementById('graficoDespesasPizza').getContext('2d');
+        const graficoDespesasPizza = new Chart(ctxPizza, {
+            type: 'doughnut',
+            data: {
+                labels: ['Alimentação', 'Transporte', 'Serviços', 'Lazer', 'Outros'],
+                datasets: [{
+                    label: 'Despesas por Categoria',
+                    data: [450, 275, 200, 185, 90],
+                    backgroundColor: ['#FF6384', '#36A2EB', '#FFCE56', '#4BC0C0', '#9966FF'],
+                    borderColor: '#fff',
+                    borderWidth: 2,
+                    hoverOffset: 4
+                }]
+            },
+            options: {
+                responsive: true,
+                maintainAspectRatio: false,
+                plugins: {
+                    legend: {
+                        position: 'bottom',
+                        labels: {
+                            padding: 15,
+                            boxWidth: 12,
+                            font: { size: 12 }
+                        }
+                    }
+                }
+            }
+        });
+
+
+        // --- Lógica do Modal ---
+        const modal = document.getElementById('modal');
+        const modalConteudo = modal.querySelector('.modal-conteudo');
+
+        const conteudoAdicionarHTML = `
+            <span class="fechar" onclick="fecharModal()">&times;</span>
+            <h2>Adicionar Rendimento</h2>
+            <label for="descricaoRendimento" class="modal-label">Descrição</label>
+            <input id="descricaoRendimento" type="text" placeholder="Ex: Salário da empresa X" class="modal-input" />
+            <div class="modal-grupo-inline">
+                <div>
+                    <label for="tipoRendimento" class="modal-label">Tipo de Rendimento</label>
+                    <select id="tipoRendimento" class="modal-input">
+                        <option value="salario">Salário</option>
+                        <option value="bico">Bico</option>
+                        <option value="unico">Renda Única</option>
+                    </select>
+                </div>
+                <div>
+                    <label for="valorRendimento" class="modal-label">Valor (R$)</label>
+                    <input id="valorRendimento" type="number" placeholder="1500,00" class="modal-input" />
+                </div>
+            </div>
+            <label for="frequencia" class="modal-label">Frequência</label>
+            <select id="frequencia" class="modal-input">
+                <option value="unica">Única</option>
+                <option value="mensal">Mensal</option>
+                <option value="quinzenal">Quinzena</option>
+            </select>
+            <button class="modal-confirmar">Confirmar</button>
+        `;
+
+        const conteudoRemoverHTML = `
+            <span class="fechar" onclick="fecharModal()">&times;</span>
+            <h2 style="color: #cc0000;">Adicionar Despesa</h2>
+            <label for="descricaoDespesa" class="modal-label">Descrição da Compra</label>
+            <input id="descricaoDespesa" type="text" placeholder="Ex: Jantar com amigos" class="modal-input" />
+            <div class="modal-grupo-inline">
+                <div>
+                    <label for="valorDespesa" class="modal-label">Valor (R$)</label>
+                    <input id="valorDespesa" type="number" placeholder="120,50" class="modal-input" />
+                </div>
+                <div>
+                    <label for="statusDespesa" class="modal-label">Status</label>
+                    <select id="statusDespesa" class="modal-input">
+                        <option value="pago">Pago</option>
+                        <option value="pendente">Pendente</option>
+                    </select>
+                </div>
+            </div>
+            <label for="tagsDespesa" class="modal-label">Tag</label>
+            <select id="tagsDespesa" class="modal-input">
+                <option value="alimentacao">Alimentação</option>
+                <option value="guardar">Guardar</option>
+                <option value="acessorio">Acessório</option>
+                <option value="jogo">Jogo</option>
+                <option value="academia">Academia</option>
+                <option value="servico">Serviço</option>
+            </select>
+            <label for="frequenciaDespesa" class="modal-label">Frequência</label>
+            <select id="frequenciaDespesa" class="modal-input">
+                <option value="unica">Única</option>
+                <option value="mensal">Mensal</option>
+                <option value="quinzenal">Quinzena</option>
+            </select>
+            <div class="modal-grupo-inline">
+                <div>
+                    <label for="pagamentoDespesa" class="modal-label">Forma de Pagamento</label>
+                    <select id="pagamentoDespesa" class="modal-input">
+                        <option value="pix">Pix</option>
+                        <option value="boleto">Boleto</option>
+                        <option value="cartao_credito">Cartão de Crédito</option>
+                    </select>
+                </div>
+                <div>
+                    <label for="parcelasDespesa" class="modal-label">Parcelas</label>
+                    <input id="parcelasDespesa" type="number" placeholder="1" value="1" class="modal-input" />
+                </div>
+            </div>
+            <button class="modal-confirmar" style="background-color: #cc0000;">Confirmar</button>
+        `;
+
+        window.abrirModal = function(tipo) {
+            if (tipo === 'adicionar') {
+                modalConteudo.innerHTML = conteudoAdicionarHTML;
+            } else { // 'remover'
+                modalConteudo.innerHTML = conteudoRemoverHTML;
+            }
+            modal.style.display = 'block';
+        }
+
+        window.fecharModal = function() {
+            modal.style.display = 'none';
+            modalConteudo.innerHTML = '';
+        }
+
+        window.onclick = function(event) {
+            if (event.target === modal) {
+                fecharModal();
+            }
+        }
+
+        const botoes = document.querySelectorAll(".botao");
+        botoes[0].addEventListener("click", () => abrirModal('adicionar'));
+        botoes[1].addEventListener("click", () => abrirModal('remover'));
+
+        // --- Lógica de Arrastar e Soltar ---
+        const draggables = document.querySelectorAll('.quadrado[draggable="true"]');
+        const container = document.querySelector('.grade-quadrados');
+
+        draggables.forEach(draggable => {
+            draggable.addEventListener('dragstart', () => {
+                draggable.classList.add('dragging');
+            });
+
+            draggable.addEventListener('dragend', () => {
+                draggable.classList.remove('dragging');
+            });
+        });
+
+        container.addEventListener('dragover', e => {
+            e.preventDefault();
+            const afterElement = getDragAfterElement(container, e.clientX);
+            const dragging = document.querySelector('.dragging');
+            if (dragging) { // Garante que só move se houver um elemento sendo arrastado
+                if (afterElement == null) {
+                    container.appendChild(dragging);
+                } else {
+                    container.insertBefore(dragging, afterElement);
+                }
+            }
+        });
+
+        function getDragAfterElement(container, x) {
+            const draggableElements = [...container.querySelectorAll('.quadrado:not(.dragging)')];
+
+            return draggableElements.reduce((closest, child) => {
+                const box = child.getBoundingClientRect();
+                const offset = x - box.left - box.width / 2;
+                if (offset < 0 && offset > closest.offset) {
+                    return { offset: offset, element: child };
+                } else {
+                    return closest;
+                }
+            }, { offset: Number.NEGATIVE_INFINITY }).element;
+        }
     });
   </script>
 

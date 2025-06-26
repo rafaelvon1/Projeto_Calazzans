@@ -187,7 +187,6 @@
       align-self: flex-start;
     }
 
-    /* Estilo para a caixa do gráfico */
     .grafico-container {
       background: #fff;
       border: 1px solid #00cc66;
@@ -205,6 +204,72 @@
       color: #009944;
       font-weight: 700;
       font-size: 22px;
+    }
+
+    /* Modal */
+    .modal {
+      display: none;
+      position: fixed;
+      z-index: 999;
+      left: 0;
+      top: 0;
+      width: 100%;
+      height: 100%;
+      overflow: auto;
+      background-color: rgba(0,0,0,0.5);
+    }
+
+    .modal-conteudo {
+      background-color: #fff;
+      margin: 10% auto;
+      padding: 30px;
+      border: 1px solid #ccc;
+      width: 90%;
+      max-width: 400px;
+      border-radius: 16px;
+      box-shadow: 0 6px 20px rgba(0,0,0,0.2);
+      text-align: center;
+      position: relative;
+    }
+
+    .modal-conteudo h2 {
+      margin-top: 0;
+      color: #00cc66;
+    }
+
+    .modal-input {
+      width: 90%;
+      margin: 10px 0;
+      padding: 10px;
+      font-size: 16px;
+      border-radius: 8px;
+      border: 1px solid #ccc;
+    }
+
+    .modal-confirmar {
+      background-color: #00cc66;
+      color: white;
+      border: none;
+      padding: 10px 20px;
+      font-size: 16px;
+      border-radius: 10px;
+      cursor: pointer;
+      margin-top: 15px;
+      transition: background-color 0.3s ease;
+    }
+
+    .modal-confirmar:hover {
+      background-color: #00b35a;
+    }
+
+    .fechar {
+      position: absolute;
+      top: 12px;
+      right: 18px;
+      font-size: 28px;
+      font-weight: bold;
+      color: #999;
+      cursor: pointer;
     }
   </style>
 </head>
@@ -254,7 +319,6 @@
         <li>Internet - R$ 80,00</li>
         <li>Farmácia - R$ 70,00</li>
         <li>Transporte - R$ 100,00</li>
-
         <li class="oculto">Aluguel - R$ 800,00</li>
         <li class="oculto">Academia - R$ 120,00</li>
         <li class="oculto">Cinema - R$ 60,00</li>
@@ -270,10 +334,20 @@
     </div>
   </div>
 
-  <!-- Gráfico fora do retângulo, abaixo do saldo atual e despesas -->
   <div class="grafico-container">
     <h2>Vendas Mensais</h2>
     <canvas id="graficoVendas"></canvas>
+  </div>
+
+  <!-- Modal -->
+  <div id="modal" class="modal">
+    <div class="modal-conteudo">
+      <span class="fechar" onclick="fecharModal()">&times;</span>
+      <h2 id="modalTitulo">Adicionar Valor</h2>
+      <input type="text" placeholder="Descrição" class="modal-input" />
+      <input type="number" placeholder="Valor (R$)" class="modal-input" />
+      <button class="modal-confirmar">Confirmar</button>
+    </div>
   </div>
 
   <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
@@ -292,7 +366,7 @@
       }
     }
 
-    // Inicializa o gráfico com Chart.js
+    // Gráfico
     const ctx = document.getElementById('graficoVendas').getContext('2d');
     const graficoVendas = new Chart(ctx, {
       type: 'bar',
@@ -310,22 +384,42 @@
       options: {
         responsive: true,
         scales: {
-          y: {
-            beginAtZero: true
-          }
+          y: { beginAtZero: true }
         },
         plugins: {
           legend: {
             labels: {
               color: '#003366',
-              font: {
-                size: 14,
-                weight: 'bold'
-              }
+              font: { size: 14, weight: 'bold' }
             }
           }
         }
       }
+    });
+
+    // Modal
+    function abrirModal(tipo) {
+      const modal = document.getElementById('modal');
+      const titulo = document.getElementById('modalTitulo');
+      titulo.textContent = tipo === 'adicionar' ? 'Adicionar Valor' : 'Remover Valor';
+      modal.style.display = 'block';
+    }
+
+    function fecharModal() {
+      document.getElementById('modal').style.display = 'none';
+    }
+
+    window.onclick = function(event) {
+      const modal = document.getElementById('modal');
+      if (event.target === modal) {
+        fecharModal();
+      }
+    }
+
+    document.addEventListener("DOMContentLoaded", () => {
+      const botoes = document.querySelectorAll(".botao");
+      botoes[0].addEventListener("click", () => abrirModal('adicionar'));
+      botoes[1].addEventListener("click", () => abrirModal('remover'));
     });
   </script>
 

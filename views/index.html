@@ -126,7 +126,8 @@
             max-width: 1600px;
             margin: 0 auto 60px;
             display: grid; 
-            grid-template-columns: repeat(auto-fit, minmax(340px, 1fr));
+            /* ALTERADO: minmax com valor menor para melhor encaixe em telas pequenas */
+            grid-template-columns: repeat(auto-fit, minmax(290px, 1fr));
             gap: 25px;
         }
 
@@ -407,22 +408,59 @@
             cursor: pointer;
         }
         
-        /* Responsividade */
+        /* ---------------------------------- */
+        /* --- Início: Responsividade --- */
+        /* ---------------------------------- */
         @media (max-width: 768px) {
+            /* Ajustes gerais de espaçamento e fonte */
             .retangulo {
                 flex-direction: column;
                 gap: 20px;
+                padding: 20px;
+                margin: 20px auto;
             }
+            .quadrado {
+                padding: 20px;
+            }
+            .topo {
+                padding: 15px 20px;
+            }
+            .topo h1 {
+                font-size: 24px;
+            }
+
+            /* Centraliza o texto e empilha os itens de saldo/despesa */
+            .texto-retangulo {
+                align-items: center;
+                text-align: center;
+            }
+            .info-linha {
+                flex-direction: column;
+                gap: 15px;
+            }
+
+            /* Transforma a divisória em uma linha horizontal */
             .divisoria {
                 width: 80%;
                 height: 1px;
-                margin: 20px 0;
+                margin: 15px 0;
             }
+
+            /* Coloca os botões de ação lado a lado */
             .botoes {
                 flex-direction: row;
             }
+
+            /* Ajustes nos modais para melhor usabilidade */
             .modal-conteudo {
                 margin: 10% auto;
+                padding: 25px;
+                width: 90%;
+            }
+            /* Empilha os campos de formulário que antes ficavam lado a lado */
+            .modal-grupo-inline {
+                flex-direction: column;
+                gap: 0; /* O margin-bottom do input já cria espaço */
             }
         }
     </style>
@@ -791,6 +829,8 @@
 
 
         // --- Lógica de Arrastar e Soltar ---
+        // Nota: Esta funcionalidade de arrastar e soltar funcionará melhor em desktops.
+        // Adaptá-la perfeitamente para toque (touch) requer lógica de JavaScript adicional.
         const draggables = document.querySelectorAll('.quadrado[draggable="true"]');
         const container = document.querySelector('.grade-quadrados');
 

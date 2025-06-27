@@ -1,8 +1,10 @@
 <?php
-
+include("controller/controller.php");
 // A forma mais direta de lidar com a requisição
 if ($_SERVER['REQUEST_METHOD'] === 'POST') {
-    
+
+    $controller= new Controller();
+
     // Dica de Mestre: Use print_r($_POST) para ver TUDO que o formulário enviou.
     // É a melhor forma de depurar! Envolvemos em <pre> para formatar a saída.
     echo "<pre>";
@@ -15,20 +17,18 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
 
         // --- LÓGICA PARA O FORMULÁRIO DE RENDIMENTO ---
         if ($_POST['form_type'] === 'add_income') {
-            
-            echo "<h2>Processando Rendimento...</h2>";
 
             // Captura de TODOS os dados do formulário de rendimento
             $descricaoRendimento = $_POST['descricao_rendimento'] ?? 'Não informado';
             $tipoRendimento = $_POST['tipo_rendimento'] ?? 'Não informado';
             $valorRendimento = $_POST['valor_rendimento'] ?? 0;
             $frequenciaRendimento = $_POST['frequencia_rendimento'] ?? 'unica';
-            
+
+
+            $controller->Inserir($descricaoRendimento, $tipoRendimento, $valorRendimento, $frequenciaRendimento);
+
             // Exibindo os valores capturados para confirmação
-            echo "Descrição: " . htmlspecialchars($descricaoRendimento) . "<br>";
-            echo "Tipo: " . htmlspecialchars($tipoRendimento) . "<br>";
-            echo "Valor: R$ " . number_format($valorRendimento, 2, ',', '.') . "<br>";
-            echo "Frequência: " . htmlspecialchars($frequenciaRendimento) . "<br>";
+            
             
             // !! AQUI VOCÊ COLOCA A LÓGICA PARA SALVAR NO BANCO DE DADOS !!
             // Exemplo: salvar_rendimento_no_db($descricaoRendimento, $tipoRendimento, $valorRendimento, $frequenciaRendimento);

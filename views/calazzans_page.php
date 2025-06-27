@@ -7,42 +7,17 @@ function formatar_moeda($valor) {
 }
 
 // Lógica para processar os dados do formulário quando enviados (POST)
-if ($_SERVER['REQUEST_METHOD'] === 'POST') {
-    // Verifica qual formulário foi enviado através do campo oculto 'form_type'
-    if (isset($_POST['form_type'])) {
-        if ($_POST['form_type'] === 'add_income') {
-            // Captura dos dados do formulário de rendimento
-            $descricaoRendimento = $_POST['descricao_rendimento'] ?? 'N/A';
-            $valorRendimento = $_POST['valor_rendimento'] ?? 0;
-            // ... capture outros campos ...
-
-            // !! AQUI VOCÊ COLOCARIA A LÓGICA PARA SALVAR O NOVO RENDIMENTO NO BANCO DE DADOS !!
-            // Exemplo: salvar_rendimento_no_db($descricaoRendimento, $valorRendimento);
-
-        } elseif ($_POST['form_type'] === 'add_expense') {
-            // Captura dos dados do formulário de despesa
-            $descricaoDespesa = $_POST['descricao_despesa'] ?? 'N/A';
-            $valorDespesa = $_POST['valor_despesa'] ?? 0;
-            // ... capture outros campos ...
-
-            // !! AQUI VOCÊ COLOCARIA A LÓGICA PARA SALVAR A NOVA DESPESA NO BANCO DE DADOS !!
-            // Exemplo: salvar_despesa_no_db($descricaoDespesa, $valorDespesa);
-        }
-    }
-    // Opcional: redirecionar para a mesma página para evitar reenvio do formulário ao atualizar
-    // header('Location: index.php');
-    // exit();
-}
 
 
-// --- DADOS DINÂMICOS (Vindos do banco de dados em uma aplicação real) ---
+
+// --- DADOS DINÂMICOS (Valores zerados conforme solicitado) ---
 
 // Valores do retângulo superior
-$saldoMes = 3250.00;
-$despesasMes = 1670.00;
+$saldoMes = 0.00;
+$despesasMes = 0.00;
 
 // Card: Saldo Atual
-$saldoAtual = 2750.00;
+$saldoAtual = 0.00;
 $proximosRecebimentos = [
     ['descricao' => 'Salário (1ª Parcela)', 'data' => '05/07/2025'],
     ['descricao' => 'Bico (Projeto Y)', 'data' => '10/07/2025'],
@@ -50,45 +25,45 @@ $proximosRecebimentos = [
 ];
 
 // Card: Despesas (a lógica de "Ver mais" será aplicada no loop)
-$totalDespesasCard = 2445.00; // Soma de todas as despesas abaixo
+$totalDespesasCard = 0.00; // Soma de todas as despesas abaixo
 $listaDespesas = [
-    ['item' => 'Supermercado', 'valor' => 150.00],
-    ['item' => 'Combustível', 'valor' => 100.00],
-    ['item' => 'Internet', 'valor' => 80.00],
-    ['item' => 'Farmácia', 'valor' => 70.00],
-    ['item' => 'Transporte', 'valor' => 100.00],
-    ['item' => 'Aluguel', 'valor' => 800.00],
-    ['item' => 'Academia', 'valor' => 120.00],
-    ['item' => 'Cinema', 'valor' => 60.00],
-    ['item' => 'Lanche', 'valor' => 45.00],
-    ['item' => 'Assinatura Netflix', 'valor' => 55.00],
-    ['item' => 'Petshop', 'valor' => 90.00],
-    ['item' => 'Uber', 'valor' => 75.00],
-    ['item' => 'Gasolina extra', 'valor' => 110.00],
-    ['item' => 'Telefone', 'valor' => 50.00],
-    ['item' => 'Presentes', 'valor' => 130.00],
+    ['item' => 'Supermercado', 'valor' => 0.00],
+    ['item' => 'Combustível', 'valor' => 0.00],
+    ['item' => 'Internet', 'valor' => 0.00],
+    ['item' => 'Farmácia', 'valor' => 0.00],
+    ['item' => 'Transporte', 'valor' => 0.00],
+    ['item' => 'Aluguel', 'valor' => 0.00],
+    ['item' => 'Academia', 'valor' => 0.00],
+    ['item' => 'Cinema', 'valor' => 0.00],
+    ['item' => 'Lanche', 'valor' => 0.00],
+    ['item' => 'Assinatura Netflix', 'valor' => 0.00],
+    ['item' => 'Petshop', 'valor' => 0.00],
+    ['item' => 'Uber', 'valor' => 0.00],
+    ['item' => 'Gasolina extra', 'valor' => 0.00],
+    ['item' => 'Telefone', 'valor' => 0.00],
+    ['item' => 'Presentes', 'valor' => 0.00],
 ];
 
 // Card: Meta de Gastos
 $gastoAtualMeta = $despesasMes;
-$metaGastos = 2500.00;
+$metaGastos = 0.00;
 $percentualMeta = ($metaGastos > 0) ? ($gastoAtualMeta / $metaGastos) * 100 : 0;
 
 // Card: Histórico de Gastos
 $historicoGastos = [
-    'Maio' => 2150.45,
-    'Abril' => 1980.90,
-    'Março' => 2410.00,
-    'Fevereiro' => 1850.70,
+    'Maio' => 0.00,
+    'Abril' => 0.00,
+    'Março' => 0.00,
+    'Fevereiro' => 0.00,
 ];
 
 // Gráfico de Pizza: Despesas por Categoria
 $despesasCategoriaLabels = ['Alimentação', 'Transporte', 'Moradia', 'Lazer', 'Serviços', 'Outros'];
-$despesasCategoriaValores = [450, 275, 800, 185, 200, 90];
+$despesasCategoriaValores = [0, 0, 0, 0, 0, 0];
 
 // Gráfico de Barras: Vendas Mensais
 $vendasMensaisLabels = ['Jan', 'Fev', 'Mar', 'Abr', 'Mai', 'Jun'];
-$vendasMensaisValores = [1200, 1900, 3000, 2500, 2200, 2800];
+$vendasMensaisValores = [0, 0, 0, 0, 0, 0];
 
 // --- FIM DO BACKEND ---
 ?>
@@ -624,7 +599,7 @@ $vendasMensaisValores = [1200, 1900, 3000, 2500, 2200, 2800];
 
   <div id="modal" class="modal">
     <div id="modal-adicionar" class="modal-conteudo" style="display: none;">
-        <form method="POST" action="index.php">
+        <form method="POST" action="../index.php">
             <input type="hidden" name="form_type" value="add_income">
             <span class="fechar" onclick="fecharModal()">&times;</span>
             <h2>Adicionar Rendimento</h2>
@@ -641,7 +616,7 @@ $vendasMensaisValores = [1200, 1900, 3000, 2500, 2200, 2800];
                 </div>
                 <div>
                     <label for="valorRendimento" class="modal-label">Valor (R$)</label>
-                    <input id="valorRendimento" name="valor_rendimento" type="number" step="0.01" placeholder="1500.00" class="modal-input" required />
+                    <input id="valorRendimento" name="valor_rendimento" type="number" step="0.01" placeholder="0.00" class="modal-input" required />
                 </div>
             </div>
             <label for="frequencia" class="modal-label">Frequência</label>
@@ -655,7 +630,7 @@ $vendasMensaisValores = [1200, 1900, 3000, 2500, 2200, 2800];
     </div>
 
     <div id="modal-remover" class="modal-conteudo" style="display: none;">
-        <form method="POST" action="index.php">
+        <form method="POST" action="../index.php">
             <input type="hidden" name="form_type" value="add_expense">
             <span class="fechar" onclick="fecharModal()">&times;</span>
             <h2 style="color: #cc0000;">Adicionar Despesa</h2>
@@ -664,7 +639,7 @@ $vendasMensaisValores = [1200, 1900, 3000, 2500, 2200, 2800];
             <div class="modal-grupo-inline">
                 <div>
                     <label for="valorDespesa" class="modal-label">Valor (R$)</label>
-                    <input id="valorDespesa" name="valor_despesa" type="number" step="0.01" placeholder="120.50" class="modal-input" required />
+                    <input id="valorDespesa" name="valor_despesa" type="number" step="0.01" placeholder="0.00" class="modal-input" required />
                 </div>
                 <div>
                     <label for="statusDespesa" class="modal-label">Status</label>

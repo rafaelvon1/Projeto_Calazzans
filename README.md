@@ -1,6 +1,6 @@
-# 💰 Projeto Callazans
+# 💰 Projeto Calazzans
 
-O **Callazans** é um sistema desenvolvido para auxiliar no **gerenciamento financeiro pessoal**, oferecendo uma interface onde o usuário pode adicionar informações de **salário** e **despesas**.  
+O **Calazzans** é um sistema desenvolvido para auxiliar no **gerenciamento financeiro pessoal**, oferecendo uma interface onde o usuário pode adicionar informações de **salário** e **despesas**.  
 A partir desses dados, são exibidos **dashboards interativos**, fornecendo uma visão clara e prática da situação financeira.
 
 ---

@@ -11,7 +11,9 @@ A partir desses dados, são exibidos **dashboards interativos**, fornecendo uma 
 - **MySQL** → banco de dados utilizado para armazenamento.  
 - **Terraform** → provisionamento da infraestrutura do banco (usuário e database).  
 - **POO** → implementação orientada a objetos.  
-- **DAO + MVC** → organização do projeto com boas práticas de arquitetura.  
+- **DAO + MVC** → organização do projeto com boas práticas de arquitetura.
+- **PHP** → back-end da aplicação  
+- **HTML** → criação das páginas e estrutura das telas  
 
 ---
 

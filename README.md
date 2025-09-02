@@ -64,7 +64,7 @@ Antes de começar, é necessário ter instalado em sua máquina:
    ```bash
    git add .
    git commit -m "minhas alterações"
-   git push origin minha-branch```
+   git push```
 
 
    

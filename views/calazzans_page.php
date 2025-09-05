@@ -12,6 +12,7 @@ function formatar_moeda($valor) {
     return 'R$ ' . number_format($valor, 2, ',', '.');
 }
 
+
 // Lógica para processar os dados do formulário quando enviados (POST)
 
 

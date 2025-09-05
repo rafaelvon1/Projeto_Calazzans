@@ -1,4 +1,6 @@
 <?php
+include("../index.php");
+
 // --- INÍCIO DO BACKEND (Simulação de Dados) ---
 
 // Função para formatar números como moeda brasileira (BRL)
@@ -13,7 +15,9 @@ function formatar_moeda($valor) {
 // --- DADOS DINÂMICOS (Valores zerados conforme solicitado) ---
 
 // Valores do retângulo superior
-$saldoMes = 0.00;
+$id_usuario = 1;
+
+$saldoMes = ;
 $despesasMes = 0.00;
 
 // Card: Saldo Atual

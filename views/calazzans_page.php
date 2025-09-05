@@ -1,10 +1,17 @@
 <?php
+include_once("../index.php");
+$index= new index();
+$id_usuario = 1;
+
+$result = $index->selectall($id_usuario);
+
 // --- INÍCIO DO BACKEND (Simulação de Dados) ---
 
 // Função para formatar números como moeda brasileira (BRL)
 function formatar_moeda($valor) {
     return 'R$ ' . number_format($valor, 2, ',', '.');
 }
+
 
 // Lógica para processar os dados do formulário quando enviados (POST)
 
@@ -13,7 +20,9 @@ function formatar_moeda($valor) {
 // --- DADOS DINÂMICOS (Valores zerados conforme solicitado) ---
 
 // Valores do retângulo superior
-$saldoMes = 0.00;
+$id_usuario = 1;
+
+$saldoMes = $result["saldo"];
 $despesasMes = 0.00;
 
 // Card: Saldo Atual
@@ -26,6 +35,8 @@ $proximosRecebimentos = [
 
 // Card: Despesas (a lógica de "Ver mais" será aplicada no loop)
 $totalDespesasCard = 0.00; // Soma de todas as despesas abaixo
+
+#esse campo tem que ter um limite
 $listaDespesas = [
     ['item' => 'Supermercado', 'valor' => 0.00],
     ['item' => 'Combustível', 'valor' => 0.00],
@@ -37,11 +48,6 @@ $listaDespesas = [
     ['item' => 'Cinema', 'valor' => 0.00],
     ['item' => 'Lanche', 'valor' => 0.00],
     ['item' => 'Assinatura Netflix', 'valor' => 0.00],
-    ['item' => 'Petshop', 'valor' => 0.00],
-    ['item' => 'Uber', 'valor' => 0.00],
-    ['item' => 'Gasolina extra', 'valor' => 0.00],
-    ['item' => 'Telefone', 'valor' => 0.00],
-    ['item' => 'Presentes', 'valor' => 0.00],
 ];
 
 // Card: Meta de Gastos

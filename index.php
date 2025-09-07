@@ -1,37 +1,35 @@
 <?php
 class index{
 
-
     public function selectall($id_usuario){
         include_once("controller/controller.php");
+        include_once("controller/filter.php");
+        $filter= new Filter();
+        $filter->setid($id_usuario);
+
         $controller= new Controller();
-        return $controller->teste($id_usuario);
+        return $controller->teste($filter);
     }
 
     function __construct()
     {   
         if ($_SERVER['REQUEST_METHOD'] === 'POST') {
             include_once("controller/controller.php");
+            include_once("controller/filter.php");
             $controller= new Controller();
-
-            // Dica de Mestre: Use print_r($_POST) para ver TUDO que o formulário enviou.
-            // É a melhor forma de depurar! Envolvemos em <pre> para formatar a saída.
-            echo "<pre>";
-            echo "Dados recebidos via POST:\n";
-            print_r($_POST);
-            echo "</pre>";
+            $filter= new Filter();
 
         // Verifica qual formulário foi enviado através do campo oculto 'form_type'
         if (isset($_POST['form_type'])) {
 
             // --- LÓGICA PARA O FORMULÁRIO DE RENDIMENTO ---
-            if ($_POST['form_type'] === 'add_income') {
+            if ($_POST['form_type'] === 'add_saldo') {
 
                 // Captura de TODOS os dados do formulário de rendimento
-                $descricaoRendimento = $_POST['descricao_rendimento'] ?? 'Não informado';
-                $tipoRendimento = $_POST['tipo_rendimento'] ?? 'Não informado';
-                $valorRendimento = $_POST['valor_rendimento'] ?? 0;
-                $frequenciaRendimento = $_POST['frequencia_rendimento'] ?? 'unica';
+                $descricaoRendimento = $_POST['descricao_rendimento'];
+                $tipoRendimento = $_POST['tipo_rendimento'] ;
+                $valorRendimento = $_POST['valor_rendimento'] ;
+                $frequenciaRendimento = $_POST['frequencia_rendimento'] ;
 
 
                 $controller->Inserir($descricaoRendimento, $tipoRendimento, $valorRendimento, $frequenciaRendimento);

@@ -40,10 +40,35 @@ class ClientModel extends Connect{
         $resultQuery = $sqlSelect->fetchAll();
         return $resultQuery;
     }
-    public function teste_saldo($id){
+    public function essafoidevasco($id){
         $sqlSelect = $this->connection->query("SELECT saldo from saldo_usuario where id_usuario = '$id';");
         $resultQuery = $sqlSelect->fetch(); // pega só a primeira linha
         return $resultQuery;
+    }
+    public function teste_saldo(Filter $filtro) {
+        try {
+            // SQL com placeholder
+            $sql = "SELECT saldo FROM saldo_usuario WHERE id_usuario = ?";
+
+            // Prepara a query usando a conexão existente
+            $stmt = $this->connection->prepare($sql);
+
+            // Define o parâmetro
+            $stmt->bindValue(1, $filtro->getId(), PDO::PARAM_INT);
+
+            // Executa
+            $stmt->execute();
+
+            // Pega o resultado
+            $resultado = $stmt->fetch(PDO::FETCH_ASSOC);
+
+            // Retorna apenas o saldo
+            return $resultado ;
+
+        } catch (PDOException $e) {
+            echo "Erro ao buscar saldo: " . $e->getMessage();
+            return null;
+        }
     }
 }
 ?>

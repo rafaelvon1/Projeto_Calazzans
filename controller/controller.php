@@ -39,8 +39,8 @@ class Controller{
         $delete= $this->model->Delete();
         header('location:./index.php');
     }
-    public function teste($id){
-        return $delete= $this->model->teste_saldo($id);
+    public function teste($prod){
+        return $testar= $this->model->teste_saldo($prod);
     }
 
 }

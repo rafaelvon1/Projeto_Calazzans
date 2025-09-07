@@ -26,7 +26,7 @@ $saldoMes = $result["saldo"];
 $despesasMes = 0.00;
 
 // Card: Saldo Atual
-$saldoAtual = 0.00;
+$saldoAtual = $result["saldo"] - 100;
 $proximosRecebimentos = [
     ['descricao' => 'Salário (1ª Parcela)', 'data' => '05/07/2025'],
     ['descricao' => 'Bico (Projeto Y)', 'data' => '10/07/2025'],
@@ -606,7 +606,7 @@ $vendasMensaisValores = [0, 0, 0, 0, 0, 0];
     <div id="modal" class="modal">
         <div id="modal-adicionar" class="modal-conteudo" style="display: none;">
             <form method="POST" action="../index.php" novalidate>
-                <input type="hidden" name="form_type" value="add_income">
+                <input type="hidden" name="form_type" value="add_saldo">
                 <span class="fechar" onclick="fecharModal()">&times;</span>
                 <h2>Adicionar Rendimento</h2>
                 <label for="descricaoRendimento" class="modal-label">Descrição</label>

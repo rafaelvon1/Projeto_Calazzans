@@ -1,6 +1,6 @@
 <?php
 define('HOST','localhost');
-define('DATABASENAME','calazzans');
+define('DATABASENAME','banco_calazzans');
 define('USER','root');
 define('PASSWORD','');
 

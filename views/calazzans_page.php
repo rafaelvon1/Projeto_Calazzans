@@ -1,32 +1,39 @@
 <?php
-include_once("../index.php");
-$index= new index();
+include_once __DIR__ . '/../index.php';
+
+$index = new index();
 $id_usuario = 1;
 
 $result = $index->selectall($id_usuario);
 
 // --- INÍCIO DO BACKEND (Simulação de Dados) ---
 
+// Calcula o primeiro e o último dia do mês atual para o modal de Rendimento
+$primeiroDiaMes = date('Y-m-01');
+$ultimoDiaMes = date('Y-m-t');
+
+// Adicionado: Calcula o intervalo de 1 ano para o modal de Despesa
+$dataMinDespesa = date('Y-m-d', strtotime('-1 year'));
+$dataMaxDespesa = date('Y-m-d', strtotime('+1 year'));
+
+
 // Função para formatar números como moeda brasileira (BRL)
-function formatar_moeda($valor) {
+function formatar_moeda($valor)
+{
     return 'R$ ' . number_format($valor, 2, ',', '.');
 }
 
-
 // Lógica para processar os dados do formulário quando enviados (POST)
-
-
+// (Esta parte ficaria no seu arquivo index.php, aqui é apenas uma simulação)
 
 // --- DADOS DINÂMICOS (Valores zerados conforme solicitado) ---
 
 // Valores do retângulo superior
-$id_usuario = 1;
-
-$saldoMes = $result["saldo"];
+$saldoMes = $result[1]["valor"];
 $despesasMes = 0.00;
 
 // Card: Saldo Atual
-$saldoAtual = $result["saldo"] - 100;
+$saldoAtual = $result[0]["valor"];
 $proximosRecebimentos = [
     ['descricao' => 'Salário (1ª Parcela)', 'data' => '05/07/2025'],
     ['descricao' => 'Bico (Projeto Y)', 'data' => '10/07/2025'],
@@ -39,16 +46,8 @@ $totalDespesasCard = 0.00; // Soma de todas as despesas abaixo
 #esse campo tem que ter um limite
 $listaDespesas = [
     ['item' => 'Supermercado', 'valor' => 0.00],
-    ['item' => 'Combustível', 'valor' => 0.00],
-    ['item' => 'Internet', 'valor' => 0.00],
-    ['item' => 'Farmácia', 'valor' => 0.00],
-    ['item' => 'Transporte', 'valor' => 0.00],
-    ['item' => 'Aluguel', 'valor' => 0.00],
-    ['item' => 'Academia', 'valor' => 0.00],
-    ['item' => 'Cinema', 'valor' => 0.00],
-    ['item' => 'Lanche', 'valor' => 0.00],
-    ['item' => 'Assinatura Netflix', 'valor' => 0.00],
 ];
+$listaDespesas[] = ['item' => 'Transporte', 'valor' => 15.50];
 
 // Card: Meta de Gastos
 $gastoAtualMeta = $despesasMes;
@@ -75,6 +74,7 @@ $vendasMensaisValores = [0, 0, 0, 0, 0, 0];
 ?>
 <!DOCTYPE html>
 <html lang="pt-br">
+
 <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -97,7 +97,7 @@ $vendasMensaisValores = [0, 0, 0, 0, 0, 0];
             align-items: center;
             justify-content: space-between;
             padding: 15px 30px;
-            box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
         }
 
         .topo h1 {
@@ -187,7 +187,7 @@ $vendasMensaisValores = [0, 0, 0, 0, 0, 0];
             display: flex;
             align-items: center;
             justify-content: center;
-            box-shadow: 0 4px 8px rgba(0,0,0,0.1);
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
         }
 
         .botao:hover {
@@ -200,7 +200,7 @@ $vendasMensaisValores = [0, 0, 0, 0, 0, 0];
             width: 90%;
             max-width: 1600px;
             margin: 0 auto 60px;
-            display: grid; 
+            display: grid;
             grid-template-columns: repeat(auto-fit, minmax(340px, 1fr));
             gap: 25px;
         }
@@ -217,7 +217,7 @@ $vendasMensaisValores = [0, 0, 0, 0, 0, 0];
             min-height: 350px;
             cursor: grab;
         }
-        
+
         .quadrado.dragging {
             opacity: 0.5;
             cursor: grabbing;
@@ -229,6 +229,13 @@ $vendasMensaisValores = [0, 0, 0, 0, 0, 0];
         .quadrado:hover {
             transform: translateY(-5px);
             box-shadow: 0 10px 20px rgba(0, 0, 0, 0.08);
+        }
+
+        .titulo-container {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            width: 100%;
         }
 
         .quadrado .titulo {
@@ -247,8 +254,9 @@ $vendasMensaisValores = [0, 0, 0, 0, 0, 0];
             align-items: flex-start;
             text-align: left;
         }
-        
-        .quadrado.despesa-lista .titulo, .quadrado.despesa-lista .valor {
+
+        .quadrado.despesa-lista .titulo,
+        .quadrado.despesa-lista .valor {
             align-self: center;
             text-align: center;
         }
@@ -282,7 +290,7 @@ $vendasMensaisValores = [0, 0, 0, 0, 0, 0];
             text-decoration: underline;
             align-self: center;
         }
-        
+
         /* Estilos para próximos recebimentos */
         .proximos-recebimentos {
             margin-top: 25px;
@@ -317,21 +325,24 @@ $vendasMensaisValores = [0, 0, 0, 0, 0, 0];
         .lista-datas li:last-child {
             border-bottom: none;
         }
-        
+
         /* Estilos para a Meta de Gastos */
         .meta-info {
             font-size: 18px;
             margin: 15px 0;
             color: #555;
         }
+
         .gasto-atual {
             font-weight: 600;
             color: #cc0000;
         }
+
         .meta-total {
             font-weight: 600;
             color: #009944;
         }
+
         .progress-bar-container {
             width: 90%;
             height: 20px;
@@ -340,15 +351,39 @@ $vendasMensaisValores = [0, 0, 0, 0, 0, 0];
             overflow: hidden;
             margin-bottom: 15px;
         }
+
         .progress-bar-fill {
             height: 100%;
             background-color: #00cc66;
             border-radius: 10px;
             transition: width 0.5s ease-in-out;
         }
+
         .meta-status {
             font-size: 14px;
             font-weight: 500;
+        }
+
+        .botao-meta {
+            background-color: #28a745;
+            color: white;
+            border: none;
+            font-size: 18px;
+            cursor: pointer;
+            width: 36px;
+            height: 36px;
+            border-radius: 8px;
+            line-height: 1;
+            transition: all 0.2s ease;
+            box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .botao-meta:hover {
+            background-color: #218838;
+            transform: scale(1.1);
         }
 
         /* Estilos para o Histórico de Gastos */
@@ -359,6 +394,7 @@ $vendasMensaisValores = [0, 0, 0, 0, 0, 0];
             width: 100%;
             text-align: left;
         }
+
         .lista-historico li {
             display: flex;
             justify-content: space-between;
@@ -366,9 +402,11 @@ $vendasMensaisValores = [0, 0, 0, 0, 0, 0];
             border-bottom: 1px solid #f0f0f0;
             font-size: 15px;
         }
+
         .lista-historico li:last-child {
             border-bottom: none;
         }
+
         .lista-historico li span:last-child {
             font-weight: 600;
             color: #cc0000;
@@ -382,9 +420,9 @@ $vendasMensaisValores = [0, 0, 0, 0, 0, 0];
             border-radius: 12px;
             padding: 20px;
             margin: 20px auto 60px;
-            max-width: 1600px; 
+            max-width: 1600px;
             width: 90%;
-            box-shadow: 0 4px 12px rgba(0,204,102,0.2);
+            box-shadow: 0 4px 12px rgba(0, 204, 102, 0.2);
             text-align: center;
         }
 
@@ -405,7 +443,7 @@ $vendasMensaisValores = [0, 0, 0, 0, 0, 0];
             width: 100%;
             height: 100%;
             overflow: auto;
-            background-color: rgba(0,0,0,0.5);
+            background-color: rgba(0, 0, 0, 0.5);
         }
 
         .modal-conteudo {
@@ -416,7 +454,7 @@ $vendasMensaisValores = [0, 0, 0, 0, 0, 0];
             width: 90%;
             max-width: 450px;
             border-radius: 16px;
-            box-shadow: 0 6px 20px rgba(0,0,0,0.2);
+            box-shadow: 0 6px 20px rgba(0, 0, 0, 0.2);
             text-align: left;
             position: relative;
         }
@@ -427,7 +465,7 @@ $vendasMensaisValores = [0, 0, 0, 0, 0, 0];
             color: #00cc66;
             text-align: center;
         }
-        
+
         .modal-label {
             display: block;
             margin-bottom: 5px;
@@ -438,20 +476,20 @@ $vendasMensaisValores = [0, 0, 0, 0, 0, 0];
 
         .modal-input {
             width: 100%;
-            box-sizing: border-box; 
+            box-sizing: border-box;
             padding: 12px;
             font-size: 16px;
             border-radius: 8px;
             border: 1px solid #ccc;
             margin-bottom: 15px;
         }
-        
+
         .modal-grupo-inline {
             display: flex;
             gap: 20px;
         }
-        
-        .modal-grupo-inline > div {
+
+        .modal-grupo-inline>div {
             flex: 1;
         }
 
@@ -481,27 +519,31 @@ $vendasMensaisValores = [0, 0, 0, 0, 0, 0];
             color: #999;
             cursor: pointer;
         }
-        
+
         /* Responsividade */
         @media (max-width: 768px) {
             .retangulo {
                 flex-direction: column;
                 gap: 20px;
             }
+
             .divisoria {
                 width: 80%;
                 height: 1px;
                 margin: 20px 0;
             }
+
             .botoes {
                 flex-direction: row;
             }
+
             .modal-conteudo {
                 margin: 10% auto;
             }
         }
     </style>
 </head>
+
 <body>
 
     <div class="topo">
@@ -540,7 +582,7 @@ $vendasMensaisValores = [0, 0, 0, 0, 0, 0];
             <div class="proximos-recebimentos">
                 <div class="proximos-recebimentos-titulo">Próximos recebimentos</div>
                 <ul class="lista-datas">
-                    <?php foreach ($proximosRecebimentos as $recebimento): ?>
+                    <?php foreach ($proximosRecebimentos as $recebimento) : ?>
                         <li><span><?= htmlspecialchars($recebimento['descricao']) ?></span> <span><?= htmlspecialchars($recebimento['data']) ?></span></li>
                     <?php endforeach; ?>
                 </ul>
@@ -551,13 +593,14 @@ $vendasMensaisValores = [0, 0, 0, 0, 0, 0];
             <div class="titulo">Despesas</div>
             <div class="valor"><?= formatar_moeda($totalDespesasCard) ?></div>
             <ul class="lista-itens">
-                <?php $i = 0; foreach ($listaDespesas as $despesa): ?>
+                <?php $i = 0;
+                foreach ($listaDespesas as $despesa) : ?>
                     <li class="<?= ($i++ >= 5) ? 'oculto' : '' ?>">
                         <?= htmlspecialchars($despesa['item']) ?> - <?= formatar_moeda($despesa['valor']) ?>
                     </li>
                 <?php endforeach; ?>
             </ul>
-            <?php if (count($listaDespesas) > 5): ?>
+            <?php if (count($listaDespesas) > 5) : ?>
                 <button class="ver-mais-btn" onclick="toggleDespesas(this)">Ver mais</button>
             <?php endif; ?>
         </div>
@@ -566,9 +609,12 @@ $vendasMensaisValores = [0, 0, 0, 0, 0, 0];
             <div class="titulo">Despesas por Categoria</div>
             <canvas id="graficoDespesasPizza" style="margin-top: 15px; max-height: 250px;"></canvas>
         </div>
-        
+
         <div class="quadrado" draggable="true">
-            <div class="titulo">Meta de Gastos (Mês)</div>
+            <div class="titulo-container">
+                <div class="titulo">Meta de Gastos (Mês)</div>
+                <button class="botao-meta" onclick="abrirModal('meta')" title="Definir Meta">🎯</button>
+            </div>
             <div class="meta-info">
                 <span class="gasto-atual"><?= formatar_moeda($gastoAtualMeta) ?></span> / <span class="meta-total"><?= formatar_moeda($metaGastos) ?></span>
             </div>
@@ -587,11 +633,11 @@ $vendasMensaisValores = [0, 0, 0, 0, 0, 0];
                 ?>
             </div>
         </div>
-        
+
         <div class="quadrado" draggable="true">
             <div class="titulo">Histórico de Gastos</div>
             <ul class="lista-historico">
-                <?php foreach ($historicoGastos as $mes => $valor): ?>
+                <?php foreach ($historicoGastos as $mes => $valor) : ?>
                     <li><span><?= htmlspecialchars($mes) ?>:</span> <span><?= formatar_moeda($valor) ?></span></li>
                 <?php endforeach; ?>
             </ul>
@@ -625,6 +671,11 @@ $vendasMensaisValores = [0, 0, 0, 0, 0, 0];
                         <input id="valorRendimento" name="valor_rendimento" type="number" step="0.01" placeholder="0.00" class="modal-input" required />
                     </div>
                 </div>
+
+                <label for="dataRendimento" class="modal-label">Data do Rendimento</label>
+                <input id="dataRendimento" type="date" class="modal-input" required min="<?= $primeiroDiaMes ?>" max="<?= $ultimoDiaMes ?>" />
+                <input type="hidden" id="dataRendimentoFormatada" name="data_rendimento" />
+
                 <label for="frequencia" class="modal-label">Frequência</label>
                 <select id="frequencia" name="frequencia_rendimento" class="modal-input" required>
                     <option value="unica">Única</option>
@@ -642,6 +693,11 @@ $vendasMensaisValores = [0, 0, 0, 0, 0, 0];
                 <h2 style="color: #cc0000;">Adicionar Despesa</h2>
                 <label for="descricaoDespesa" class="modal-label">Descrição da Compra</label>
                 <input id="descricaoDespesa" name="descricao_despesa" type="text" placeholder="Ex: Jantar com amigos" class="modal-input" required />
+
+                <label for="dataDespesa" class="modal-label">Data da Despesa</label>
+                <input id="dataDespesa" type="date" class="modal-input" required min="<?= $dataMinDespesa ?>" max="<?= $dataMaxDespesa ?>" />
+                <input type="hidden" id="dataDespesaFormatada" name="data_despesa" />
+
                 <div class="modal-grupo-inline">
                     <div>
                         <label for="valorDespesa" class="modal-label">Valor (R$)</label>
@@ -687,221 +743,277 @@ $vendasMensaisValores = [0, 0, 0, 0, 0, 0];
                 <button type="submit" class="modal-confirmar" style="background-color: #cc0000;">Confirmar</button>
             </form>
         </div>
+
+        <div id="modal-meta" class="modal-conteudo" style="display: none;">
+            <form method="POST" action="../index.php" novalidate>
+                <input type="hidden" name="form_type" value="set_meta">
+                <span class="fechar" onclick="fecharModal()">&times;</span>
+                <h2>Definir Meta de Gastos</h2>
+                <label for="valorMeta" class="modal-label">Valor da Meta (R$)</label>
+                <input id="valorMeta" name="valor_meta" type="number" step="0.01" placeholder="2000.00" class="modal-input" required />
+                <button type="submit" class="modal-confirmar">Salvar Meta</button>
+            </form>
+        </div>
+
     </div>
 
 
     <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
     <script>
-    document.addEventListener("DOMContentLoaded", () => {
-        // Função para mostrar/ocultar despesas
-        window.toggleDespesas = function(botao) {
-            const container = botao.closest('.despesa-lista');
-            const itensOcultos = container.querySelectorAll('.oculto');
-            const ocultosVisiveis = itensOcultos.length > 0 && itensOcultos[0].style.display === 'list-item';
+        document.addEventListener("DOMContentLoaded", () => {
+            // Função para mostrar/ocultar despesas
+            window.toggleDespesas = function(botao) {
+                const container = botao.closest('.despesa-lista');
+                const itensOcultos = container.querySelectorAll('.oculto');
+                const ocultosVisiveis = itensOcultos.length > 0 && itensOcultos[0].style.display === 'list-item';
 
-            if (ocultosVisiveis) {
-                itensOcultos.forEach(item => item.style.display = 'none');
-                botao.textContent = 'Ver mais';
-            } else {
-                itensOcultos.forEach(item => item.style.display = 'list-item');
-                botao.textContent = 'Ver menos';
+                if (ocultosVisiveis) {
+                    itensOcultos.forEach(item => item.style.display = 'none');
+                    botao.textContent = 'Ver mais';
+                } else {
+                    itensOcultos.forEach(item => item.style.display = 'list-item');
+                    botao.textContent = 'Ver menos';
+                }
             }
-        }
 
-        // Gráfico de Barras - Vendas Mensais
-        const ctx = document.getElementById('graficoVendas').getContext('2d');
-        const graficoVendas = new Chart(ctx, {
-            type: 'bar',
-            data: {
-                labels: <?= json_encode($vendasMensaisLabels) ?>,
-                datasets: [{
-                    label: 'Vendas',
-                    data: <?= json_encode($vendasMensaisValores) ?>,
-                    backgroundColor: 'rgba(0, 204, 102, 0.7)',
-                    borderColor: 'rgba(0, 204, 102, 1)',
-                    borderWidth: 1,
-                    borderRadius: 6,
-                }]
-            },
-            options: {
-                responsive: true,
-                scales: {
-                    y: { beginAtZero: true }
+            // Gráfico de Barras - Vendas Mensais
+            const ctx = document.getElementById('graficoVendas').getContext('2d');
+            const graficoVendas = new Chart(ctx, {
+                type: 'bar',
+                data: {
+                    labels: <?= json_encode($vendasMensaisLabels) ?>,
+                    datasets: [{
+                        label: 'Vendas',
+                        data: <?= json_encode($vendasMensaisValores) ?>,
+                        backgroundColor: 'rgba(0, 204, 102, 0.7)',
+                        borderColor: 'rgba(0, 204, 102, 1)',
+                        borderWidth: 1,
+                        borderRadius: 6,
+                    }]
                 },
-                plugins: {
-                    legend: {
-                        labels: {
-                            color: '#003366',
-                            font: { size: 14, weight: 'bold' }
+                options: {
+                    responsive: true,
+                    scales: {
+                        y: {
+                            beginAtZero: true
+                        }
+                    },
+                    plugins: {
+                        legend: {
+                            labels: {
+                                color: '#003366',
+                                font: {
+                                    size: 14,
+                                    weight: 'bold'
+                                }
+                            }
                         }
                     }
                 }
-            }
-        });
-        
-        // Gráfico de Pizza - Despesas por Categoria
-        const ctxPizza = document.getElementById('graficoDespesasPizza').getContext('2d');
-        const graficoDespesasPizza = new Chart(ctxPizza, {
-            type: 'doughnut',
-            data: {
-                labels: <?= json_encode($despesasCategoriaLabels) ?>,
-                datasets: [{
-                    label: 'Despesas por Categoria',
-                    data: <?= json_encode($despesasCategoriaValores) ?>,
-                    backgroundColor: ['#FF6384', '#36A2EB', '#FFCE56', '#4BC0C0', '#9966FF', '#FF9F40'],
-                    borderColor: '#fff',
-                    borderWidth: 2,
-                    hoverOffset: 4
-                }]
-            },
-            options: {
-                responsive: true,
-                maintainAspectRatio: false,
-                plugins: {
-                    legend: {
-                        position: 'bottom',
-                        labels: {
-                            padding: 15,
-                            boxWidth: 12,
-                            font: { size: 12 }
+            });
+
+            // Gráfico de Pizza - Despesas por Categoria
+            const ctxPizza = document.getElementById('graficoDespesasPizza').getContext('2d');
+            const graficoDespesasPizza = new Chart(ctxPizza, {
+                type: 'doughnut',
+                data: {
+                    labels: <?= json_encode($despesasCategoriaLabels) ?>,
+                    datasets: [{
+                        label: 'Despesas por Categoria',
+                        data: <?= json_encode($despesasCategoriaValores) ?>,
+                        backgroundColor: ['#FF6384', '#36A2EB', '#FFCE56', '#4BC0C0', '#9966FF', '#FF9F40'],
+                        borderColor: '#fff',
+                        borderWidth: 2,
+                        hoverOffset: 4
+                    }]
+                },
+                options: {
+                    responsive: true,
+                    maintainAspectRatio: false,
+                    plugins: {
+                        legend: {
+                            position: 'bottom',
+                            labels: {
+                                padding: 15,
+                                boxWidth: 12,
+                                font: {
+                                    size: 12
+                                }
+                            }
                         }
                     }
                 }
-            }
-        });
+            });
 
 
-        // --- Lógica do Modal ---
-        const modal = document.getElementById('modal');
-        const modalAdicionar = document.getElementById('modal-adicionar');
-        const modalRemover = document.getElementById('modal-remover');
+            // --- Lógica do Modal ---
+            const modal = document.getElementById('modal');
+            const modalAdicionar = document.getElementById('modal-adicionar');
+            const modalRemover = document.getElementById('modal-remover');
+            const modalMeta = document.getElementById('modal-meta');
 
-        window.abrirModal = function(tipo) {
-            fecharModal(); // Garante que todos estejam fechados antes de abrir um
-            if (tipo === 'adicionar') {
-                modalAdicionar.style.display = 'block';
-            } else { // 'remover'
-                modalRemover.style.display = 'block';
-            }
-            modal.style.display = 'block';
-        }
-
-        window.fecharModal = function() {
-            modal.style.display = 'none';
-            modalAdicionar.style.display = 'none';
-            modalRemover.style.display = 'none';
-        }
-
-        window.onclick = function(event) {
-            if (event.target === modal) {
+            window.abrirModal = function(tipo) {
                 fecharModal();
-            }
-        }
-        
-        // --- INÍCIO: Lógica de Validação dos Modais ---
-        const formAdicionar = document.querySelector('#modal-adicionar form');
-        const formRemover = document.querySelector('#modal-remover form');
-
-        formAdicionar.addEventListener('submit', function(event) {
-            // Previne o envio padrão do formulário para fazer a validação primeiro
-            event.preventDefault();
-
-            const descricao = document.getElementById('descricaoRendimento').value.trim();
-            const valor = document.getElementById('valorRendimento').value;
-
-            // 1. Validação da Descrição
-            if (descricao === '') {
-                alert('O campo "Descrição" é obrigatório.');
-                return;
-            }
-            if (!isNaN(descricao) && isFinite(descricao)) {
-                alert('A descrição não pode ser apenas um número. Por favor, seja mais descritivo.');
-                return;
+                if (tipo === 'adicionar') {
+                    modalAdicionar.style.display = 'block';
+                } else if (tipo === 'remover') {
+                    modalRemover.style.display = 'block';
+                } else if (tipo === 'meta') {
+                    modalMeta.style.display = 'block';
+                }
+                modal.style.display = 'block';
             }
 
-            // 2. Validação do Valor
-            if (valor === '' || isNaN(parseFloat(valor)) || parseFloat(valor) <= 0) {
-                alert('Por favor, insira um valor de rendimento válido e positivo.');
-                return;
+            window.fecharModal = function() {
+                modal.style.display = 'none';
+                modalAdicionar.style.display = 'none';
+                modalRemover.style.display = 'none';
+                modalMeta.style.display = 'none';
             }
 
-            // Se todas as validações passaram, envia o formulário
-            this.submit();
-        });
-
-        formRemover.addEventListener('submit', function(event) {
-            event.preventDefault();
-
-            const descricao = document.getElementById('descricaoDespesa').value.trim();
-            const valor = document.getElementById('valorDespesa').value;
-            const parcelas = document.getElementById('parcelasDespesa').value;
-
-            // 1. Validação da Descrição
-            if (descricao === '') {
-                alert('O campo "Descrição da Compra" é obrigatório.');
-                return;
-            }
-
-            // 2. Validação do Valor
-            if (valor === '' || isNaN(parseFloat(valor)) || parseFloat(valor) <= 0) {
-                alert('Por favor, insira um valor de despesa válido e positivo.');
-                return;
-            }
-            
-            // 3. Validação das Parcelas
-            if (parcelas === '' || isNaN(parseInt(parcelas)) || parseInt(parcelas) < 1) {
-                alert('O número de parcelas deve ser um número inteiro igual ou maior que 1.');
-                return;
-            }
-
-            // Se todas as validações passaram, envia o formulário
-            this.submit();
-        });
-        // --- FIM: Lógica de Validação ---
-
-
-        // --- Lógica de Arrastar e Soltar ---
-        const draggables = document.querySelectorAll('.quadrado[draggable="true"]');
-        const container = document.querySelector('.grade-quadrados');
-
-        draggables.forEach(draggable => {
-            draggable.addEventListener('dragstart', () => {
-                draggable.classList.add('dragging');
-            });
-
-            draggable.addEventListener('dragend', () => {
-                draggable.classList.remove('dragging');
-            });
-        });
-
-        container.addEventListener('dragover', e => {
-            e.preventDefault();
-            const afterElement = getDragAfterElement(container, e.clientX);
-            const dragging = document.querySelector('.dragging');
-            if (dragging) {
-                if (afterElement == null) {
-                    container.appendChild(dragging);
-                } else {
-                    container.insertBefore(dragging, afterElement);
+            window.onclick = function(event) {
+                if (event.target === modal) {
+                    fecharModal();
                 }
             }
-        });
 
-        function getDragAfterElement(container, x) {
-            const draggableElements = [...container.querySelectorAll('.quadrado:not(.dragging)')];
+            // --- INÍCIO: Lógica de Validação dos Modais ---
+            const formAdicionar = document.querySelector('#modal-adicionar form');
+            const formRemover = document.querySelector('#modal-remover form');
+            const formMeta = document.querySelector('#modal-meta form');
 
-            return draggableElements.reduce((closest, child) => {
-                const box = child.getBoundingClientRect();
-                const offset = x - box.left - box.width / 2;
-                if (offset < 0 && offset > closest.offset) {
-                    return { offset: offset, element: child };
-                } else {
-                    return closest;
+            formAdicionar.addEventListener('submit', function(event) {
+                event.preventDefault();
+
+                const descricao = document.getElementById('descricaoRendimento').value.trim();
+                const valor = document.getElementById('valorRendimento').value;
+                const data = document.getElementById('dataRendimento').value;
+
+                if (descricao === '') {
+                    alert('O campo "Descrição" é obrigatório.');
+                    return;
                 }
-            }, { offset: Number.NEGATIVE_INFINITY }).element;
-        }
-    });
+                if (!isNaN(descricao) && isFinite(descricao)) {
+                    alert('A descrição não pode ser apenas um número. Por favor, seja mais descritivo.');
+                    return;
+                }
+
+                if (valor === '' || isNaN(parseFloat(valor)) || parseFloat(valor) <= 0) {
+                    alert('Por favor, insira um valor de rendimento válido e positivo.');
+                    return;
+                }
+
+                if (data === '') {
+                    alert('Por favor, selecione uma data para o rendimento.');
+                    return;
+                }
+
+                const dataISO = document.getElementById('dataRendimento').value;
+                const partesData = dataISO.split('-');
+                const dataFormatada = `${partesData[2]}/${partesData[1]}/${partesData[0]}`;
+                document.getElementById('dataRendimentoFormatada').value = dataFormatada;
+
+                this.submit();
+            });
+
+            formRemover.addEventListener('submit', function(event) {
+                event.preventDefault();
+
+                const descricao = document.getElementById('descricaoDespesa').value.trim();
+                const data = document.getElementById('dataDespesa').value;
+                const valor = document.getElementById('valorDespesa').value;
+                const parcelas = document.getElementById('parcelasDespesa').value;
+
+                if (descricao === '') {
+                    alert('O campo "Descrição da Compra" é obrigatório.');
+                    return;
+                }
+
+                if (data === '') {
+                    alert('Por favor, selecione uma data para a despesa.');
+                    return;
+                }
+
+                if (valor === '' || isNaN(parseFloat(valor)) || parseFloat(valor) <= 0) {
+                    alert('Por favor, insira um valor de despesa válido e positivo.');
+                    return;
+                }
+
+                if (parcelas === '' || isNaN(parseInt(parcelas)) || parseInt(parcelas) < 1) {
+                    alert('O número de parcelas deve ser um número inteiro igual ou maior que 1.');
+                    return;
+                }
+
+                const dataISO = document.getElementById('dataDespesa').value;
+                const partesData = dataISO.split('-');
+                const dataFormatada = `${partesData[2]}/${partesData[1]}/${partesData[0]}`;
+                document.getElementById('dataDespesaFormatada').value = dataFormatada;
+
+                this.submit();
+            });
+
+            formMeta.addEventListener('submit', function(event) {
+                event.preventDefault();
+                const valor = document.getElementById('valorMeta').value;
+
+                if (valor === '' || isNaN(parseFloat(valor)) || parseFloat(valor) <= 0) {
+                    alert('Por favor, insira um valor de meta válido e positivo.');
+                    return;
+                }
+                this.submit();
+            });
+
+            // --- FIM: Lógica de Validação ---
+
+
+            // --- Lógica de Arrastar e Soltar ---
+            const draggables = document.querySelectorAll('.quadrado[draggable="true"]');
+            const container = document.querySelector('.grade-quadrados');
+
+            draggables.forEach(draggable => {
+                draggable.addEventListener('dragstart', () => {
+                    draggable.classList.add('dragging');
+                });
+
+                draggable.addEventListener('dragend', () => {
+                    draggable.classList.remove('dragging');
+                });
+            });
+
+            container.addEventListener('dragover', e => {
+                e.preventDefault();
+                const afterElement = getDragAfterElement(container, e.clientX);
+                const dragging = document.querySelector('.dragging');
+                if (dragging) {
+                    if (afterElement == null) {
+                        container.appendChild(dragging);
+                    } else {
+                        container.insertBefore(dragging, afterElement);
+                    }
+                }
+            });
+
+            function getDragAfterElement(container, x) {
+                const draggableElements = [...container.querySelectorAll('.quadrado:not(.dragging)')];
+
+                return draggableElements.reduce((closest, child) => {
+                    const box = child.getBoundingClientRect();
+                    const offset = x - box.left - box.width / 2;
+                    if (offset < 0 && offset > closest.offset) {
+                        return {
+                            offset: offset,
+                            element: child
+                        };
+                    } else {
+                        return closest;
+                    }
+                }, {
+                    offset: Number.NEGATIVE_INFINITY
+                }).element;
+            }
+        });
     </script>
 
 </body>
+
 </html>

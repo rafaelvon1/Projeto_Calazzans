@@ -5,7 +5,7 @@ config = {
     "host": "127.0.0.1",
     "user": "root",
     "password": "",
-    "database": "meubanco"
+    "database": "banco_calazzans"
 }
 
 # Lê e executa o arquivo SQL

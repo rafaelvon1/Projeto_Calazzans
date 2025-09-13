@@ -15,7 +15,7 @@ provider "mysql" {
 
 # Cria o banco
 resource "mysql_database" "meubanco" {
-  name = "meubanco"
+  name = "banco_calazzans"
 }
 
 # Cria o usuário

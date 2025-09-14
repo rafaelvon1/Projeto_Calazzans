@@ -29,16 +29,37 @@ function formatar_moeda($valor)
 // --- DADOS DINÂMICOS (Valores zerados conforme solicitado) ---
 
 // Valores do retângulo superior
-$saldoMes = $result[1]["valor"];
-$despesasMes = 0.00;
+$saldoMes = 0;
 
-// Card: Saldo Atual
-$saldoAtual = $result[0]["valor"];
-$proximosRecebimentos = [
-    ['descricao' => 'Salário (1ª Parcela)', 'data' => '05/07/2025'],
-    ['descricao' => 'Bico (Projeto Y)', 'data' => '10/07/2025'],
-    ['descricao' => 'Salário (2ª Parcela)', 'data' => '20/07/2025'],
-];
+// Descobre mês/ano atuais
+$mesAtual = date("m", strtotime('+1 month'));
+$anoAtual = date("Y", strtotime('+1 month'));
+
+foreach ($result as $row) {
+    // Converte a string "12/09/2025" em DateTime
+    $data = DateTime::createFromFormat('d/m/Y', $row["data_saldo"]);
+
+    if ($data && $data->format('m') === $mesAtual && $data->format('Y') === $anoAtual) {
+        $saldoMes += $row["valor"];
+    }
+}
+$despesasMes = 12;
+
+// Card: Saldo Atual esse saldo atual sera subtraido por despesa desse mes 
+$saldoAtual = 0;
+$proximosRecebimentos = [];
+
+foreach ($result as $row) {
+    $data = DateTime::createFromFormat('d/m/Y', $row["data_saldo"]);
+    if ($data && $data->format('m') === $mesAtual && $data->format('Y') === $anoAtual) {
+        $proximosRecebimentos[] = [
+            'descricao' => $row['descricao_saldo'],
+            'saldo' => $row['valor']."$",
+            'data' => $row['data_saldo']
+        ];
+    }
+}
+
 
 // Card: Despesas (a lógica de "Ver mais" será aplicada no loop)
 $totalDespesasCard = 0.00; // Soma de todas as despesas abaixo
@@ -49,9 +70,10 @@ $listaDespesas = [
 ];
 $listaDespesas[] = ['item' => 'Transporte', 'valor' => 15.50];
 
+
 // Card: Meta de Gastos
 $gastoAtualMeta = $despesasMes;
-$metaGastos = 0.00;
+$metaGastos = 0;
 $percentualMeta = ($metaGastos > 0) ? ($gastoAtualMeta / $metaGastos) * 100 : 0;
 
 // Card: Histórico de Gastos
@@ -583,7 +605,7 @@ $vendasMensaisValores = [0, 0, 0, 0, 0, 0];
                 <div class="proximos-recebimentos-titulo">Próximos recebimentos</div>
                 <ul class="lista-datas">
                     <?php foreach ($proximosRecebimentos as $recebimento) : ?>
-                        <li><span><?= htmlspecialchars($recebimento['descricao']) ?></span> <span><?= htmlspecialchars($recebimento['data']) ?></span></li>
+                        <li> <span><?= htmlspecialchars($recebimento['saldo']) ?></span> <span><?= htmlspecialchars($recebimento['descricao']) ?></span> <span><?= htmlspecialchars($recebimento['data']) ?></span></li>
                     <?php endforeach; ?>
                 </ul>
             </div>

@@ -1,93 +1,100 @@
 <?php
-class index{
+ini_set('display_errors', 1);
+ini_set('display_startup_errors', 1);
+error_reporting(E_ALL);
 
+session_start(); // Para pegar id_usuario da sessão
 
-    public function selectall($id_usuario){
-        include_once("controller/controller.php");
-        $controller= new Controller();
-        return $controller->teste($id_usuario);
+class Index {
+
+    private $controller;
+    private $filter;
+
+    public function __construct() {
+        include_once __DIR__ . '/controller/controller.php';
+        include_once __DIR__ . '/controller/filter.php';
+
+        $this->controller = new Controller();
+        $this->filter = new Filter();
+
+        if ($_SERVER['REQUEST_METHOD'] === 'POST') {
+            $this->handlePost();
+        }
     }
 
-    function __construct()
-    {   
-        if ($_SERVER['REQUEST_METHOD'] === 'POST') {
-            include_once("controller/controller.php");
-            $controller= new Controller();
-
-            // Dica de Mestre: Use print_r($_POST) para ver TUDO que o formulário enviou.
-            // É a melhor forma de depurar! Envolvemos em <pre> para formatar a saída.
-            echo "<pre>";
-            echo "Dados recebidos via POST:\n";
-            print_r($_POST);
-            echo "</pre>";
-
-        // Verifica qual formulário foi enviado através do campo oculto 'form_type'
-        if (isset($_POST['form_type'])) {
-
-            // --- LÓGICA PARA O FORMULÁRIO DE RENDIMENTO ---
-            if ($_POST['form_type'] === 'add_income') {
-
-                // Captura de TODOS os dados do formulário de rendimento
-                $descricaoRendimento = $_POST['descricao_rendimento'] ?? 'Não informado';
-                $tipoRendimento = $_POST['tipo_rendimento'] ?? 'Não informado';
-                $valorRendimento = $_POST['valor_rendimento'] ?? 0;
-                $frequenciaRendimento = $_POST['frequencia_rendimento'] ?? 'unica';
-
-
-                $controller->Inserir($descricaoRendimento, $tipoRendimento, $valorRendimento, $frequenciaRendimento);
-
-                // Exibindo os valores capturados para confirmação
-                
-                
-                // !! AQUI VOCÊ COLOCA A LÓGICA PARA SALVAR NO BANCO DE DADOS !!
-                // Exemplo: salvar_rendimento_no_db($descricaoRendimento, $tipoRendimento, $valorRendimento, $frequenciaRendimento);
-                
-            // --- LÓGICA PARA O FORMULÁRIO DE DESPESA ---
-            } elseif ($_POST['form_type'] === 'add_expense') {
-                
-                echo "<h2>Processando Despesa...</h2>";
-
-                // Captura de TODOS os dados do formulário de despesa
-                $descricaoDespesa = $_POST['descricao_despesa'] ?? 'Não informado';
-                $valorDespesa = $_POST['valor_despesa'] ?? 0;
-                $statusDespesa = $_POST['status_despesa'] ?? 'pago';
-                $tagDespesa = $_POST['tag_despesa'] ?? 'outros';
-                $frequenciaDespesa = $_POST['frequencia_despesa'] ?? 'unica';
-                $pagamentoDespesa = $_POST['pagamento_despesa'] ?? 'Não informado';
-                $parcelasDespesa = $_POST['parcelas_despesa'] ?? 1;
-                
-                // Exibindo os valores capturados para confirmação
-                echo "Descrição: " . htmlspecialchars($descricaoDespesa) . "<br>";
-                echo "Valor: R$ " . number_format($valorDespesa, 2, ',', '.') . "<br>";
-                echo "Status: " . htmlspecialchars($statusDespesa) . "<br>";
-                echo "Tag: " . htmlspecialchars($tagDespesa) . "<br>";
-                echo "Frequência: " . htmlspecialchars($frequenciaDespesa) . "<br>";
-                echo "Forma de Pagamento: " . htmlspecialchars($pagamentoDespesa) . "<br>";
-                echo "Parcelas: " . htmlspecialchars($parcelasDespesa) . "<br>";
-
-                // !! AQUI VOCÊ COLOCA A LÓGICA PARA SALVAR NO BANCO DE DADOS !!
-                // Exemplo: salvar_despesa_no_db($descricaoDespesa, $valorDespesa, ...todos os outros campos...);
-
-            } else {
-                echo "Tipo de formulário desconhecido.";
-            }
-
-        } else {
+    private function handlePost() {
+        if (!isset($_POST['form_type'])) {
             echo "Erro: 'form_type' não foi enviado.";
+            return;
         }
 
-        // Após processar e salvar no banco, o ideal é redirecionar para evitar reenvio
-        // Exemplo:
-        // header("Location: views/calazzans_page.php?status=success");
-        // exit();
+        switch ($_POST['form_type']) {
+            case 'add_saldo':
+                $this->addSaldo();
+                break;
 
-    } else {
-        // Se a requisição NÃO for POST, redireciona para a página principal.
-        // Isso impede que acessem este script diretamente pela URL.
-        #header("Location: views/calazzans_page.php");
-        
-        // Sempre use exit() após um redirecionamento de header.
+            case 'add_expense':
+                $this->addExpense();
+                break;
+
+            default:
+                echo "Tipo de formulário desconhecido.";
+                break;
+        }
     }
+
+    private function addSaldo() {
+        $id_usuario = $_SESSION['id_usuario'] ?? 1; // Substitua 1 pelo ID do usuário real
+
+        if ($id_usuario == 0) {
+            echo "Erro: usuário não logado.";
+            return;
+        }
+
+        // Preenchendo o filtro com os dados do POST
+        $this->filter->setid($id_usuario);
+        $this->filter->setDescricaoSaldo($_POST['descricao_rendimento'] ?? '');
+        $this->filter->setTipoSaldo($_POST['tipo_rendimento'] ?? '');
+        $this->filter->setValorSaldo($_POST['valor_rendimento'] ?? 0);
+        $this->filter->setDataSaldo($_POST['data_rendimento'] ?? '');
+        $this->filter->setFrequenciaSaldo($_POST['frequencia_rendimento'] ?? '');
+
+        // Chamando o controller
+        $result = $this->controller->cadastrar_saldo($this->filter);
+
+        if ($result) {
+            header("Location: views/calazzans_page.php");
+
+        } else {
+            echo "<p style='color:red;'>Erro ao cadastrar saldo.</p>";
+        }
+    }
+
+    private function addExpense() {
+        $descricaoDespesa = $_POST['descricao_despesa'] ?? 'Não informado';
+        $valorDespesa = $_POST['valor_despesa'] ?? 0;
+        $statusDespesa = $_POST['status_despesa'] ?? 'pago';
+        $tagDespesa = $_POST['tag_despesa'] ?? 'outros';
+        $frequenciaDespesa = $_POST['frequencia_despesa'] ?? 'unica';
+        $pagamentoDespesa = $_POST['pagamento_despesa'] ?? 'Não informado';
+        $parcelasDespesa = $_POST['parcelas_despesa'] ?? 1;
+
+        echo "<h2>Processando Despesa...</h2>";
+        echo "Descrição: " . htmlspecialchars($descricaoDespesa) . "<br>";
+        echo "Valor: R$ " . number_format($valorDespesa, 2, ',', '.') . "<br>";
+        echo "Status: " . htmlspecialchars($statusDespesa) . "<br>";
+        echo "Tag: " . htmlspecialchars($tagDespesa) . "<br>";
+        echo "Frequência: " . htmlspecialchars($frequenciaDespesa) . "<br>";
+        echo "Forma de Pagamento: " . htmlspecialchars($pagamentoDespesa) . "<br>";
+        echo "Parcelas: " . htmlspecialchars($parcelasDespesa) . "<br>";
+    }
+
+    public function selectAll($id_usuario) {
+        $this->filter->setid($id_usuario);
+        return $this->controller->selectall($this->filter);
     }
 }
+
+// Inicializa a classe
+new Index();
 ?>
